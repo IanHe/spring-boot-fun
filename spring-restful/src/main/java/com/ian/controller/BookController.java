@@ -7,11 +7,15 @@ import com.ian.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.Map;
 
+@Validated
 @RestController
 public class BookController {
 
@@ -29,12 +33,12 @@ public class BookController {
 
     @PostMapping("/books")
     @ResponseStatus(HttpStatus.CREATED)
-    Book newBook(@RequestBody Book newBook) {
+    Book newBook(@Valid @RequestBody Book newBook) {
         return this.bookRepository.save(newBook);
     }
 
     @GetMapping("/books/{id}")
-    Book findOne(@PathVariable Long id) throws BookNotFoundException {
+    Book findOne(@PathVariable @Min(1) Long id) throws BookNotFoundException {
         return this.bookRepository.findById(id).orElseThrow(() -> new BookNotFoundException(id));
     }
 
